@@ -45,8 +45,12 @@
   };
 
   ColumnSelect.prototype.selectColumnAnimation = function ($column) {
-    $column.css('box-shadow', 'inset 0px 0px 5px 1px rgba(175, 211, 255, 1.0)');
-    $column.animate({ 'box-shadow-color': 'rgba(175, 211, 255, 0.0)' });
+    $column.addClass('animated copiedToClipboard');
+
+    setTimeout(function () {
+      $column.removeClass('animated');
+      $column.removeClass('copiedToClipboard');
+    }, 1000);
   }
 
   ColumnSelect.prototype.copyColumnToClipboard = function ($column) {

@@ -1,0 +1,15 @@
+# Keep junk OUT
+*.sql
+*.sql.gz
+*.sql.bz2
+*.kpf
+*.komodoproject
+*.proj
+*.tmp
+.DS_Store
+Icon
+Thumbs.db
+.bundle
+.sass-cache
+*.sublime-project
+*.sublime-workspace
