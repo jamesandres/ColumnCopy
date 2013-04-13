@@ -14,7 +14,6 @@
     "page": "src/bg/background.html",
     "persistent": true
   },
-  "options_page": "src/options/index.html",
   "permissions": [
     "clipboardWrite"
   ],
