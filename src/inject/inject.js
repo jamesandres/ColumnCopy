@@ -50,13 +50,16 @@
   }
 
   ColumnSelect.prototype.copyColumnToClipboard = function ($column) {
-    var cellHtml = [];
+    var toCopy = [];
 
     $column.each(function () {
-      cellHtml.push($(this).html());
+      toCopy.push($(this).html());
     });
 
-    console.log(cellHtml.join("\n"));
+    // Ping the background.html page, this is where the clipboard
+    // communication happens
+    // See: http://stackoverflow.com/a/8807145/806988
+    chrome.extension.sendMessage({ toCopy: toCopy.join("\n") });
   }
 
 
