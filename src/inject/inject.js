@@ -8,7 +8,7 @@
   function ColumnSelect(table) {
     this.table = table;
 
-    this.init(this.$table);
+    this.init(this.table);
   }
 
   ColumnSelect.prototype.init = function (table) {
@@ -18,18 +18,34 @@
   };
 
   ColumnSelect.prototype.handleCellClick = function (e, cell) {
-    // Only select the column on Alt + Click
-    if (!e.altKey) {
-      return;
+    // Copy entire table on Alt + Click
+    if (e.altKey) {
+      this.copyTable(cell);
     }
+    // Copy column on Meta + Click
+    else if (e.metaKey) {
+      this.copyColumnContainingCell(cell);
+    }
+  };
 
+  ColumnSelect.prototype.copyTable = function (cell) {
+    var $table = $(this.table);
+
+    if ($table) {
+      this.copiedToClipboardAnimation($table);
+      this.copyTableToClipboard($table);
+    }
+  };
+
+
+  ColumnSelect.prototype.copyColumnContainingCell = function (cell) {
     var $column = this.getColumnContainingCell(cell);
 
     if ($column) {
-      this.selectColumnAnimation($column);
+      this.copiedToClipboardAnimation($column);
       this.copyColumnToClipboard($column);
     }
-  };
+  }
 
   ColumnSelect.prototype.getColumnContainingCell = function (cell) {
     // Find the column number this cell belongs to, ie: 3rd cell is 3rd column.
@@ -44,14 +60,14 @@
     return $('th:nth-child(' + (n + 1) + '),td:nth-child(' + (n + 1) + ')', this.table);
   };
 
-  ColumnSelect.prototype.selectColumnAnimation = function ($column) {
+  ColumnSelect.prototype.copiedToClipboardAnimation = function ($column) {
     $column.addClass('animated copiedToClipboard');
 
     setTimeout(function () {
       $column.removeClass('animated');
       $column.removeClass('copiedToClipboard');
     }, 1000);
-  }
+  };
 
   ColumnSelect.prototype.copyColumnToClipboard = function ($column) {
     var toCopy = [];
@@ -64,7 +80,23 @@
     // communication happens
     // See: http://stackoverflow.com/a/8807145/806988
     chrome.extension.sendMessage({ toCopy: toCopy.join("\n") });
-  }
+  };
+
+  ColumnSelect.prototype.copyTableToClipboard = function ($table) {
+    var toCopy = [], cols;
+
+    $('tr', $table).each(function () {
+      cols = []
+
+      $('td,th', this).each(function () {
+        cols.push($(this).html());
+      })
+
+      toCopy.push(cols.join("\t"));
+    });
+
+    chrome.extension.sendMessage({ toCopy: toCopy.join("\n") });
+  };
 
 
   // Bind the column select plugin to every table on the page
