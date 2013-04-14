@@ -1,4 +1,6 @@
-(function (window, $) {
+/*jslint browser: true, plusplus: true, todo: true, white: true, indent: 2 */
+(function ($) {
+  'use strict';
 
   /**
    * The ColumnSelect class-y function.
@@ -6,6 +8,15 @@
    * Given a table, ...
    */
   function ColumnSelect(table) {
+    this.settings = {
+      columnSeperator: "\t",
+      rowSeparator:    "\n"
+    };
+
+    if ($.client.os === 'Windows') {
+      this.settings.rowSeparator = "\r\n"; // Yuck.
+    }
+
     this.table = table;
 
     this.init(this.table);
@@ -31,7 +42,7 @@
         for (i = 0; i < cs; i++) {
           map.push(column);
           column += 1;
-        };
+        }
 
         $(this).data('_ColumnSelect', map);
       });
@@ -45,9 +56,11 @@
   };
 
   ColumnSelect.prototype.handleCellClick = function (e, cell) {
+    // TODO: Different key map for $.client.os === 'Windows'?
+
     // Copy entire table on Alt + Click
     if (e.altKey) {
-      this.copyTable(cell);
+      this.copyTable();
     }
     // Copy column on Meta + Click
     else if (e.metaKey) {
@@ -55,7 +68,7 @@
     }
   };
 
-  ColumnSelect.prototype.copyTable = function (cell) {
+  ColumnSelect.prototype.copyTable = function () {
     var $table = $(this.table);
 
     if ($table) {
@@ -74,7 +87,8 @@
   };
 
   ColumnSelect.prototype.getColumnContainingCell = function (cell) {
-    var $cell   = $(cell),
+    var that    = this,
+        $cell   = $(cell),
         // The column span map for this cell
         cellMap = $cell.data('_ColumnSelect') || [],
         column  = [],
@@ -91,9 +105,10 @@
 
       $('td,th', this).each(function () {
         var $this = $(this),
-            map   = $this.data('_ColumnSelect');
+            map   = $this.data('_ColumnSelect'),
+            i;
 
-        for (var i = map.length - 1; i >= 0; i--) {
+        for (i = map.length - 1; i >= 0; i--) {
           if (cellMap.indexOf(map[i]) !== -1) {
             row.push($this.html());
             column.push(this);
@@ -102,24 +117,25 @@
         }
       });
 
-      values.push(row.join("\t"));
+      values.push(row.join(that.settings.columnSeperator));
     });
 
     return { column: $(column), values: values };
   };
 
   ColumnSelect.prototype.getValuesForTable = function ($table) {
-    var values = [],
+    var that   = this,
+        values = [],
         row;
 
     $('tr', $table).each(function () {
-      row = []
+      row = [];
 
       $('td,th', this).each(function () {
         row.push($(this).html());
-      })
+      });
 
-      values.push(row.join("\t"));
+      values.push(row.join(that.settings.columnSeperator));
     });
 
     return values;
@@ -138,7 +154,7 @@
     // Ping the background.html page, this is where the clipboard
     // communication happens
     // See: http://stackoverflow.com/a/8807145/806988
-    chrome.extension.sendMessage({ toCopy: values.join("\n") });
+    chrome.extension.sendMessage({ toCopy: values.join(this.settings.rowSeparator) });
   };
 
 
@@ -148,4 +164,4 @@
   });
 
 
-}(window, jQuery));
+}(jQuery));
