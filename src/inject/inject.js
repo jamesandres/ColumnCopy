@@ -12,6 +12,33 @@
   }
 
   ColumnSelect.prototype.init = function (table) {
+    this.buildColspanMap(table);
+    this.bindHandlers(table);
+  };
+
+  ColumnSelect.prototype.buildColspanMap = function (table) {
+    var column;
+
+    $('tr', table).each(function () {
+      column = 0;
+
+      $('th,td', this).each(function () {
+        var $this = $(this),
+            cs    = $this.attr('colspan') || 1,
+            map   = [],
+            i;
+
+        for (i = 0; i < cs; i++) {
+          map.push(column);
+          column += 1;
+        };
+
+        $(this).data('_ColumnSelect', map);
+      });
+    });
+  };
+
+  ColumnSelect.prototype.bindHandlers = function (table) {
     var that = this;
 
     $('th,td', table).click(function (e) { that.handleCellClick(e, this); });
@@ -33,31 +60,69 @@
 
     if ($table) {
       this.copiedToClipboardAnimation($table);
-      this.copyTableToClipboard($table);
+      this.copyValuesToClipboard(this.getValuesForTable($table));
     }
   };
 
-
   ColumnSelect.prototype.copyColumnContainingCell = function (cell) {
-    var $column = this.getColumnContainingCell(cell);
+    var data = this.getColumnContainingCell(cell);
 
-    if ($column) {
-      this.copiedToClipboardAnimation($column);
-      this.copyColumnToClipboard($column);
+    if (data && data.column && data.values) {
+      this.copiedToClipboardAnimation(data.column);
+      this.copyValuesToClipboard(data.values);
     }
-  }
+  };
 
   ColumnSelect.prototype.getColumnContainingCell = function (cell) {
-    // Find the column number this cell belongs to, ie: 3rd cell is 3rd column.
-    var n = $(cell).index();
+    var $cell   = $(cell),
+        // The column span map for this cell
+        cellMap = $cell.data('_ColumnSelect') || [],
+        column  = [],
+        values  = [],
+        row;
 
     // Unknown error, cell not found in row, cell is not inside a row, or similar.
-    if (n < 0) {
+    if (!cellMap || cellMap.length <= 0) {
       return false;
     }
 
-    // Get all Nth column cells in the table
-    return $('th:nth-child(' + (n + 1) + '),td:nth-child(' + (n + 1) + ')', this.table);
+    $('tr', this.table).each(function () {
+      row = [];
+
+      $('td,th', this).each(function () {
+        var $this = $(this),
+            map   = $this.data('_ColumnSelect');
+
+        for (var i = map.length - 1; i >= 0; i--) {
+          if (cellMap.indexOf(map[i]) !== -1) {
+            row.push($this.html());
+            column.push(this);
+            break;
+          }
+        }
+      });
+
+      values.push(row.join("\t"));
+    });
+
+    return { column: $(column), values: values };
+  };
+
+  ColumnSelect.prototype.getValuesForTable = function ($table) {
+    var values = [],
+        row;
+
+    $('tr', $table).each(function () {
+      row = []
+
+      $('td,th', this).each(function () {
+        row.push($(this).html());
+      })
+
+      values.push(row.join("\t"));
+    });
+
+    return values;
   };
 
   ColumnSelect.prototype.copiedToClipboardAnimation = function ($column) {
@@ -69,33 +134,11 @@
     }, 1000);
   };
 
-  ColumnSelect.prototype.copyColumnToClipboard = function ($column) {
-    var toCopy = [];
-
-    $column.each(function () {
-      toCopy.push($(this).html());
-    });
-
+  ColumnSelect.prototype.copyValuesToClipboard = function (values) {
     // Ping the background.html page, this is where the clipboard
     // communication happens
     // See: http://stackoverflow.com/a/8807145/806988
-    chrome.extension.sendMessage({ toCopy: toCopy.join("\n") });
-  };
-
-  ColumnSelect.prototype.copyTableToClipboard = function ($table) {
-    var toCopy = [], cols;
-
-    $('tr', $table).each(function () {
-      cols = []
-
-      $('td,th', this).each(function () {
-        cols.push($(this).html());
-      })
-
-      toCopy.push(cols.join("\t"));
-    });
-
-    chrome.extension.sendMessage({ toCopy: toCopy.join("\n") });
+    chrome.extension.sendMessage({ toCopy: values.join("\n") });
   };
 
 
