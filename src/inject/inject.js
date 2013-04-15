@@ -1,5 +1,5 @@
-/*jslint browser: true, plusplus: true, todo: true, white: true, indent: 2 */
-(function ($) {
+/*jslint browser: true, nomen: true, plusplus: true, todo: true, white: true, indent: 2 */
+(function (window, document, $) {
   'use strict';
 
   /**
@@ -7,78 +7,53 @@
    *
    * Given a table, ...
    */
-  function ColumnSelect(table) {
+  function ColumnSelect() {
     this.settings = {
       columnSeperator: "\t",
       rowSeparator:    "\n"
     };
 
-    if ($.client.os === 'Windows') {
+    if (window.navigator.userAgent.match(/Windows/) !== -1) {
       this.settings.rowSeparator = "\r\n"; // Yuck.
     }
 
-    this.table = table;
-
-    this.init(this.table);
+    this.init();
   }
 
-  ColumnSelect.prototype.init = function (table) {
-    this.buildColspanMap(table);
-    this.bindHandlers(table);
+  ColumnSelect.prototype.init = function () {
+    this.bindHandlers();
   };
 
-  ColumnSelect.prototype.buildColspanMap = function (table) {
-    var column;
-
-    $('tr', table).each(function () {
-      column = 0;
-
-      $('th,td', this).each(function () {
-        var $this = $(this),
-            cs    = $this.attr('colspan') || 1,
-            map   = [],
-            i;
-
-        for (i = 0; i < cs; i++) {
-          map.push(column);
-          column += 1;
-        }
-
-        $(this).data('_ColumnSelect', map);
-      });
-    });
-  };
-
-  ColumnSelect.prototype.bindHandlers = function (table) {
+  ColumnSelect.prototype.bindHandlers = function () {
     var that = this;
 
-    $('th,td', table).click(function (e) { that.handleCellClick(e, this); });
+    $(document).on('click', 'th,td', function (e) { that.handleCellClick(e, this); });
   };
 
+  // TODO: Different key map for $.client.os === 'Windows'?
   ColumnSelect.prototype.handleCellClick = function (e, cell) {
-    // TODO: Different key map for $.client.os === 'Windows'?
+    var $table = $(cell).parents('table:first');
 
     // Copy entire table on Alt + Click
     if (e.altKey) {
-      this.copyTable();
+      this.copyTableContainingCell(cell, $table);
     }
     // Copy column on Meta + Click
     else if (e.metaKey) {
-      this.copyColumnContainingCell(cell);
+      this.buildColspanMap($table);
+      this.copyColumnContainingCell(cell, $table);
     }
   };
 
-  ColumnSelect.prototype.copyTable = function () {
-    var $table = $(this.table);
-
+  ColumnSelect.prototype.copyTableContainingCell = function (cell, $table) {
     if ($table) {
       this.copiedToClipboardAnimation($table);
       this.copyValuesToClipboard(this.getValuesForTable($table));
     }
   };
 
-  ColumnSelect.prototype.copyColumnContainingCell = function (cell) {
-    var data = this.getColumnContainingCell(cell);
+  ColumnSelect.prototype.copyColumnContainingCell = function (cell, $table) {
+    var data = this.getColumnContainingCell(cell, $table);
 
     if (data && data.column && data.values) {
       this.copiedToClipboardAnimation(data.column);
@@ -86,7 +61,7 @@
     }
   };
 
-  ColumnSelect.prototype.getColumnContainingCell = function (cell) {
+  ColumnSelect.prototype.getColumnContainingCell = function (cell, $table) {
     var that    = this,
         $cell   = $(cell),
         // The column span map for this cell
@@ -100,7 +75,7 @@
       return false;
     }
 
-    $('tr', this.table).each(function () {
+    $('tr', $table).each(function () {
       row = [];
 
       $('td,th', this).each(function () {
@@ -121,6 +96,28 @@
     });
 
     return { column: $(column), values: values };
+  };
+
+  ColumnSelect.prototype.buildColspanMap = function ($table) {
+    var column;
+
+    $('tr', $table).each(function () {
+      column = 0;
+
+      $('th,td', this).each(function () {
+        var $this = $(this),
+            cs    = $this.attr('colspan') || 1,
+            map   = [],
+            i;
+
+        for (i = 0; i < cs; i++) {
+          map.push(column);
+          column += 1;
+        }
+
+        $(this).data('_ColumnSelect', map);
+      });
+    });
   };
 
   ColumnSelect.prototype.getValuesForTable = function ($table) {
@@ -158,10 +155,6 @@
   };
 
 
-  // Bind the column select plugin to every table on the page
-  $('table').each(function () {
-    $(this).data('_ColumnSelect', new ColumnSelect(this));
-  });
+  var _ColumnSelect = new ColumnSelect();
 
-
-}(jQuery));
+}(window, document, jQuery));
