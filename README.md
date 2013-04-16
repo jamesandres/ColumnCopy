@@ -2,6 +2,13 @@
 
 A Google Chrome extension which enables selecting columns from table.
 
+## Installation
+
+1. Download a the [latest ColumnSelect zip](https://github.com/jamesandres/ColumnSelect/archive/master.zip).
+2. Go to the extensions page in Chrome, it's a tab on the settings page
+3. Tick the "Developer mode" checkbox
+4. Click "Load unpacked extension" and choose the ColumnSelect folder you just unzipped
+
 
 ## Usage
 

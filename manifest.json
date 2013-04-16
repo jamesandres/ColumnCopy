@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "manifest_version": 2,
   "description": "Enables selecting columns from table.",
-  "homepage_url": "http://example.com",
+  "homepage_url": "https://github.com/jamesandres/ColumnSelect",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
