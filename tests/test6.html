@@ -1,0 +1,75 @@
+<html>
+<head>
+  <title>ColumnSelect - Test 6 - Inner HTML</title>
+
+  <style>
+    html,body {
+      width: 100%;
+      margin: 0;
+    }
+    table {
+      width: 80%;
+      margin: 40px auto 0;
+    }
+    th {
+      background-color: #ffff66;
+      font-weight: bold;
+      padding: 0.5em 0.5em;
+    }
+    td {
+      background-color: #eee;
+      padding: 0.25em 0.5em;
+    }
+    tr:nth-child(odd) td {
+      background-color: #ddd;
+    }
+    td:nth-child(-n+1) {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <table>
+    <thead>
+      <tr>
+        <th><input type="checkbox" name="selectAll" value="SELECT-ALL" /></th>
+        <th colspan="2">Date</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td><input type="checkbox" name="select[1]" value="1"></td>
+        <td>15 April <strong>2013</strong></td>
+        <td><input type="text" name="paid-in[1]" value="Paid in 5 days"></td>
+        <td>98765<input type="hidden" name="hidden[1]"></td>
+        <td>Super client<br></td>
+        <td><textarea name="value[1]" rows="1" cols="20">USD <b>$29.99</b></textarea></td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="select[2]" value="2"></td>
+        <td>1 April <strong>2013</strong></td>
+        <td><input type="text" name="paid-in[2]" value="Paid in 72 days"></td>
+        <td>12345<input type="hidden" name="hidden[2]"></td>
+        <td>A. Conglomerate<br></td>
+        <td><textarea name="value[2]" rows="1" cols="20">USD $29.99</textarea></td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="select[3]" value="3"></td>
+        <td>1 January <strong>2013</strong></td>
+        <td><input type="text" name="paid-in[3]" value="Paid in 15 days"></td>
+        <td>38502<input type="hidden" name="hidden[3]"></td>
+        <td>Super client<br></td>
+        <td><textarea name="value[3]" rows="1" cols="20">USD $29.99</textarea></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+</body>
+</html>
