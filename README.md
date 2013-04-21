@@ -13,8 +13,14 @@ A Google Chrome extension which enables selecting columns from table.
 ## Usage
 
 1. Enable the extension.
-2. Alt+Click on any table cell. The column contents is now in your clipboard.
-3. Super+Click on any table cell. The table contents is now in your clipboard.
+2. Alt + Click on any table cell. The column contents is now in your clipboard.
+3. Shit + Alt + Click on any table cell. The table contents is now in your clipboard.
+
+
+## Credits
+
+"Pinstriped Suit" graphic used in promotional images by Alex Berkowitz from
+SubtlePatterns.com. See: http://subtlepatterns.com/pinstriped-suit/
 
 
 ## License
