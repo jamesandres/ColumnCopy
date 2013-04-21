@@ -3,11 +3,11 @@
   'use strict';
 
   /**
-   * The ColumnSelect class-y function.
+   * The ColumnCopy class-y function.
    *
    * Given a table, ...
    */
-  function ColumnSelect() {
+  function ColumnCopy() {
     this.settings = {
       columnSeperator: "\t",
       rowSeparator:    "\n"
@@ -20,18 +20,18 @@
     this.init();
   }
 
-  ColumnSelect.prototype.init = function () {
+  ColumnCopy.prototype.init = function () {
     this.bindHandlers();
   };
 
-  ColumnSelect.prototype.bindHandlers = function () {
+  ColumnCopy.prototype.bindHandlers = function () {
     var that = this;
 
     $(document).on('click', 'th,td', function (e) { that.handleCellClick(e, this); });
   };
 
   // TODO: Different key map for $.client.os === 'Windows'?
-  ColumnSelect.prototype.handleCellClick = function (e, cell) {
+  ColumnCopy.prototype.handleCellClick = function (e, cell) {
     var $table = $(cell).parents('table:first');
 
     // Copy entire table on Alt + Shift + Click
@@ -45,14 +45,14 @@
     }
   };
 
-  ColumnSelect.prototype.copyTableContainingCell = function (cell, $table) {
+  ColumnCopy.prototype.copyTableContainingCell = function (cell, $table) {
     if ($table) {
       this.copiedToClipboardAnimation($table);
       this.copyValuesToClipboard(this.getValuesForTable($table));
     }
   };
 
-  ColumnSelect.prototype.copyColumnContainingCell = function (cell, $table) {
+  ColumnCopy.prototype.copyColumnContainingCell = function (cell, $table) {
     var data = this.getColumnContainingCell(cell, $table);
 
     if (data && data.column && data.values) {
@@ -61,11 +61,11 @@
     }
   };
 
-  ColumnSelect.prototype.getColumnContainingCell = function (cell, $table) {
+  ColumnCopy.prototype.getColumnContainingCell = function (cell, $table) {
     var that    = this,
         $cell   = $(cell),
         // The column span map for this cell
-        cellMap = $cell.data('_ColumnSelect') || [],
+        cellMap = $cell.data('_ColumnCopy') || [],
         column  = [],
         values  = [],
         row;
@@ -80,7 +80,7 @@
 
       $('td,th', this).each(function () {
         var $this = $(this),
-            map   = $this.data('_ColumnSelect'),
+            map   = $this.data('_ColumnCopy'),
             i;
 
         for (i = map.length - 1; i >= 0; i--) {
@@ -98,7 +98,7 @@
     return { column: $(column), values: values };
   };
 
-  ColumnSelect.prototype.buildColspanMap = function ($table) {
+  ColumnCopy.prototype.buildColspanMap = function ($table) {
     var column;
 
     $('tr', $table).each(function () {
@@ -115,12 +115,12 @@
           column += 1;
         }
 
-        $(this).data('_ColumnSelect', map);
+        $(this).data('_ColumnCopy', map);
       });
     });
   };
 
-  ColumnSelect.prototype.getValuesForTable = function ($table) {
+  ColumnCopy.prototype.getValuesForTable = function ($table) {
     var that   = this,
         values = [],
         row;
@@ -146,7 +146,7 @@
    * Original concept by James Padolsey.
    * See: http://james.padolsey.com/javascript/replacing-text-in-the-dom-its-not-that-simple/
    */
-  ColumnSelect.prototype.getCellText = function (cell) {
+  ColumnCopy.prototype.getCellText = function (cell) {
     var next, result = [];
 
     if (cell.nodeType === 1) { // Element node
@@ -185,7 +185,7 @@
     return result.join('');
   };
 
-  ColumnSelect.prototype.copiedToClipboardAnimation = function ($column) {
+  ColumnCopy.prototype.copiedToClipboardAnimation = function ($column) {
     $column.addClass('animated copiedToClipboard');
 
     setTimeout(function () {
@@ -194,7 +194,7 @@
     }, 1000);
   };
 
-  ColumnSelect.prototype.copyValuesToClipboard = function (values) {
+  ColumnCopy.prototype.copyValuesToClipboard = function (values) {
     // Ping the background.html page, this is where the clipboard
     // communication happens
     // See: http://stackoverflow.com/a/8807145/806988
@@ -202,6 +202,6 @@
   };
 
 
-  var _ColumnSelect = new ColumnSelect();
+  var _ColumnCopy = new ColumnCopy();
 
 }(window, document, jQuery));
