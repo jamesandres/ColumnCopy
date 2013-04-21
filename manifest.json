@@ -2,7 +2,7 @@
   "name": "ColumnCopy",
   "version": "0.2.1",
   "manifest_version": 2,
-  "description": "Enables selecting columns from table.",
+  "description": "Enables copying columns from tables.",
   "homepage_url": "https://github.com/jamesandres/ColumnCopy",
   "icons": {
     "16": "icons/icon16.png",
