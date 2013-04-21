@@ -34,12 +34,12 @@
   ColumnSelect.prototype.handleCellClick = function (e, cell) {
     var $table = $(cell).parents('table:first');
 
-    // Copy entire table on Alt + Click
-    if (e.altKey) {
+    // Copy entire table on Alt + Shift + Click
+    if (e.altKey && e.shiftKey) {
       this.copyTableContainingCell(cell, $table);
     }
-    // Copy column on Meta + Click
-    else if (e.metaKey) {
+    // Copy column on Alt + Click
+    else if (e.altKey) {
       this.buildColspanMap($table);
       this.copyColumnContainingCell(cell, $table);
     }
