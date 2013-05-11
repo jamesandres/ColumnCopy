@@ -3,9 +3,7 @@
   'use strict';
 
   /**
-   * The ColumnCopy class-y function.
-   *
-   * Given a table, ...
+   * The ColumnCopy function object.
    */
   function ColumnCopy() {
     this.settings = {
@@ -43,6 +41,10 @@
       this.buildColspanMap($table);
       this.copyColumnContainingCell(cell, $table);
     }
+
+    // Need to stop bubbling here to support nested tables. For example,
+    // consider the case: table > tr > td > table > tr > td{*ColumnCopy here*}.
+    e.stopPropagation();
   };
 
   ColumnCopy.prototype.copyTableContainingCell = function (cell, $table) {
@@ -83,10 +85,10 @@
       return false;
     }
 
-    $('tr', $table).each(function () {
+    $('>tr, >thead>tr, >tbody>tr', $table).each(function () {
       row = [];
 
-      $('td,th', this).each(function () {
+      $('>td, >th', this).each(function () {
         var $this = $(this),
             map   = $this.data('_ColumnCopy'),
             i;
@@ -109,10 +111,10 @@
   ColumnCopy.prototype.buildColspanMap = function ($table) {
     var column;
 
-    $('tr', $table).each(function () {
+    $('>tr, >thead>tr, >tbody>tr', $table).each(function () {
       column = 0;
 
-      $('th,td', this).each(function () {
+      $('>td, >th', this).each(function () {
         var $this = $(this),
             cs    = $this.attr('colspan') || 1,
             map   = [],
@@ -133,10 +135,10 @@
         values = [],
         row;
 
-    $('tr', $table).each(function () {
+    $('>tr, >thead>tr, >tbody>tr', $table).each(function () {
       row = [];
 
-      $('td,th', this).each(function () {
+      $('>td, >th', this).each(function () {
         row.push(that.getCellText(this));
       });
 
