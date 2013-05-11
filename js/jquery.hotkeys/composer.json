@@ -1,0 +1,20 @@
+{
+    "name": "components/jquery.hotkeys",
+    "description": "jQuery Hotkeys Plugin",
+    "type": "component",
+    "homepage": "https://github.com/jeresig/jquery.hotkeys",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tzury Bar Yochay",
+            "email": "tzury@reblaze.com"
+        },
+        {
+            "name": "John Resig",
+            "email": "jeresig@gmail.com"
+        }
+    ],
+    "extra": {
+        "js": "jquery.hotkeys.js"
+    }
+}

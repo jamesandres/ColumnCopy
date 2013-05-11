@@ -8,7 +8,9 @@
   function ColumnCopy() {
     this.settings = {
       columnSeperator: "\t",
-      rowSeparator:    "\n"
+      rowSeparator:    "\n",
+      columnHotkey:    'alt',
+      tableHotkey:     'alt+shift'
     };
 
     if (window.navigator.userAgent.match(/Windows/) !== -1) {
@@ -25,26 +27,41 @@
   ColumnCopy.prototype.bindHandlers = function () {
     var that = this;
 
+    // Reset all hotkeys on key release
+    this.hotkeysReset();
+    $(document).on('keyup', null, '', function () { that.hotkeysReset(); });
+
+    // Set the column hotkey when its combo is pressed. Same for table hotkey.
+    $(document).on('keydown', null, this.settings.columnHotkey, function () { that.activeHotkey.column = true; });
+    $(document).on('keydown', null, this.settings.tableHotkey, function () { that.activeHotkey.table = true; });
+
+    // Finally, execute the routine on click
     $(document).on('click', 'th,td', function (e) { that.handleCellClick(e, this); });
+  };
+
+  ColumnCopy.prototype.hotkeysReset = function () {
+    this.activeHotkey = {
+      'column': false,
+      'table':  false
+    };
   };
 
   // TODO: Different key map for $.client.os === 'Windows'?
   ColumnCopy.prototype.handleCellClick = function (e, cell) {
     var $table = $(cell).parents('table:first');
 
-    // Copy entire table on Alt + Shift + Click
-    if (e.altKey && e.shiftKey) {
+    if (this.activeHotkey.table) {
       this.copyTableContainingCell(cell, $table);
-    }
-    // Copy column on Alt + Click
-    else if (e.altKey) {
+
+      // Need to stop bubbling here to support nested tables. For example,
+      // consider the case: table > tr > td > table > tr > td{*ColumnCopy here*}.
+      e.stopPropagation();
+    } else if (this.activeHotkey.column) {
       this.buildColspanMap($table);
       this.copyColumnContainingCell(cell, $table);
-    }
 
-    // Need to stop bubbling here to support nested tables. For example,
-    // consider the case: table > tr > td > table > tr > td{*ColumnCopy here*}.
-    e.stopPropagation();
+      e.stopPropagation();
+    }
   };
 
   ColumnCopy.prototype.copyTableContainingCell = function (cell, $table) {
