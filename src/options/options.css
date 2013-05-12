@@ -1,0 +1,10 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+#container {
+  min-width: 640px;
+  width: 60%;
+  margin: 4em auto;
+}

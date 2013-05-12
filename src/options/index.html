@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <title>ColumnCopy Options</title>
+
+    <link rel="stylesheet" href="options.css">
+  </head>
+
+  <body>
+
+    <div id="container">
+      <h1>ColumnCopy Options</h1>
+
+      <form>
+        <fieldset>
+          <legend>Keyboard shortcuts:</legend>
+
+          <div class="form-item">
+            <label>Copy one column:</label>
+            <span>Click + </span>
+            <input type="text" name="columnHotkey" value="Alt">
+          </div>
+
+          <div class="form-item">
+            <label>Copy whole table:</label>
+            <span>Click + </span>
+            <input type="text" name="columnHotkey" value="Alt+Shift">
+          </div>
+        </fieldset>
+      </form>
+
+      <pre id="debug"></pre>
+    </div>
+
+    <script src="../../js/jquery/jquery.min.js"></script>
+    <script src="../../js/jquery.hotkeys/jquery.hotkeys.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
