@@ -6,6 +6,9 @@
    * The ColumnCopy function object.
    */
   function ColumnCopy() {
+    // TODO: Load options, I think this needs to be done using chrome.extension.connect() + port.onMessage.addListener(function(msg) { if (msg.oninit) { .. } }.
+    // var options = localStorage.options ? JSON.parse(localStorage.options) : {};
+
     this.settings = {
       columnSeperator: "\t",
       rowSeparator:    "\n",

@@ -1,75 +1,155 @@
 jQuery(function ($) {
 
-  // List of keyboard combos from https://github.com/jeresig/jquery.hotkeys/blob/master/test-static-01.html
-  var elements = [
-        "esc","tab","space","return","backspace",/*"scroll","capslock","numlock",*/"insert","home","del","end","pageup","pagedown",
-        "left","up","right","down",
-        "f1","f2","f3","f4","f5","f6","f7","f8","f9","f10","f11","f12",
-        "1","2","3","4","5","6","7","8","9","0",
-        "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-        "Ctrl+a","Ctrl+b","Ctrl+c","Ctrl+d","Ctrl+e","Ctrl+f","Ctrl+g","Ctrl+h","Ctrl+i","Ctrl+j","Ctrl+k","Ctrl+l","Ctrl+m",
-        "Ctrl+n","Ctrl+o","Ctrl+p","Ctrl+q","Ctrl+r","Ctrl+s","Ctrl+t","Ctrl+u","Ctrl+v","Ctrl+w","Ctrl+x","Ctrl+y","Ctrl+z",
-        "Shift+a","Shift+b","Shift+c","Shift+d","Shift+e","Shift+f","Shift+g","Shift+h","Shift+i","Shift+j","Shift+k","Shift+l",
-        "Shift+m","Shift+n","Shift+o","Shift+p","Shift+q","Shift+r","Shift+s","Shift+t","Shift+u","Shift+v","Shift+w","Shift+x",
-        "Shift+y","Shift+z",
-        "Alt+a","Alt+b","Alt+c","Alt+d","Alt+e","Alt+f","Alt+g","Alt+h","Alt+i","Alt+j","Alt+k","Alt+l",
-        "Alt+m","Alt+n","Alt+o","Alt+p","Alt+q","Alt+r","Alt+s","Alt+t","Alt+u","Alt+v","Alt+w","Alt+x","Alt+y","Alt+z",
-        "Ctrl+esc","Ctrl+tab","Ctrl+space","Ctrl+return","Ctrl+backspace",/*"Ctrl+scroll","Ctrl+capslock","Ctrl+numlock",*/
-        "Ctrl+insert","Ctrl+home","Ctrl+del","Ctrl+end","Ctrl+pageup","Ctrl+pagedown","Ctrl+left","Ctrl+up","Ctrl+right",
-        "Ctrl+down",
-        "Ctrl+f1","Ctrl+f2","Ctrl+f3","Ctrl+f4","Ctrl+f5","Ctrl+f6","Ctrl+f7","Ctrl+f8","Ctrl+f9","Ctrl+f10","Ctrl+f11","Ctrl+f12",
-        "Shift+esc","Shift+tab","Shift+space","Shift+return","Shift+backspace",/*"Shift+scroll","Shift+capslock","Shift+numlock",*/
-        "Shift+insert","Shift+home","Shift+del","Shift+end","Shift+pageup","Shift+pagedown","Shift+left","Shift+up",
-        "Shift+right","Shift+down",
-        "Shift+f1","Shift+f2","Shift+f3","Shift+f4","Shift+f5","Shift+f6","Shift+f7","Shift+f8","Shift+f9","Shift+f10","Shift+f11","Shift+f12",
-        "Alt+esc","Alt+tab","Alt+space","Alt+return","Alt+backspace",/*"Alt+scroll","Alt+capslock","Alt+numlock",*/
-        "Alt+insert","Alt+home","Alt+del","Alt+end","Alt+pageup","Alt+pagedown","Alt+left","Alt+up","Alt+right","Alt+down",
-        "Alt+f1","Alt+f2","Alt+f3","Alt+f4","Alt+f5","Alt+f6","Alt+f7","Alt+f8","Alt+f9","Alt+f10","Alt+f11","Alt+f12"
-      ],
-      combo = [],
-      i;
+  var $focusedInput,
+      options = localStorage.options ? JSON.parse(localStorage.options) : {};
 
-  $(document).on('keyup', null, '', function (e) {
-    combo = [];
-  });
 
-  for (i = elements.length - 1; i >= 0; i--) {
-    var handler = (function (hotkey) {
-          return function (e) {
-            if (e.data.keys && combo.indexOf(hotkey) === -1) {
-              combo.push(hotkey);
-              $('#debug').html(combo.join('+'));
-            }
-          };
-        }(elements[i]));
-
-    $(document).on('keydown', null, elements[i], handler);
+  // Initially load previous options
+  if (options) {
+    init(options);
   }
 
+
+  // Fake input focusing
+  $(document).on('click', function () {
+    $focusedInput = null;
+    $('.input').removeClass('focus');
+  });
+
+  $('.input').on('click', function (e) {
+    $focusedInput = $(this);
+
+    $('.input').removeClass('focus');
+    $focusedInput.addClass('focus');
+
+    e.stopPropagation();
+  });
+
+
+  // Hotkey -> focusedInput handling
+  $(document).on('keydown', null, '', function (e) {
+    var possible = hotkeysHandler(e),
+        hotkey;
+
+    if (!$focusedInput) {
+      return;
+    }
+
+    for (hotkey in possible) {
+      if (possible.hasOwnProperty(hotkey) && possible[hotkey]) {
+        saveHotkey($focusedInput.attr('id'), hotkey);
+        $focusedInput.html(valueToKeyboardKeys(hotkey));
+        break;
+      }
+    };
+  });
+
+
+  $('#resetDefault').click(function (e) {
+    if (confirm('Are you sure you want to reset to defaults?')) {
+      init({ columnHotkey: 'alt', tableHotkey: 'alt+shift' });
+
+      $('body').trigger('click'); // Unfocus all inputs
+    }
+
+    return false;
+  });
+
+
+  /**
+   * Initialization
+   */
+  function init(defaults) {
+    var key;
+
+    for (key in defaults) {
+      if (defaults.hasOwnProperty(key)) {
+        $('#' + key).html(valueToKeyboardKeys(defaults[key]));
+      }
+    }
+  }
+
+  /**
+   * Creates keyboard keys markup for a hotkey value.
+   */
+  function valueToKeyboardKeys(value) {
+    var parts = value.split('+'),
+        i;
+
+    for (i = parts.length - 1; i >= 0; i--) {
+      parts[i] = '<span class="key">' + toTitleCase(parts[i]) + '</span>';
+    }
+
+    return parts.join('<span class="sep">+</span>');
+  }
+
+  /**
+   * Saves a hotkey to localStorage.
+   */
+  function saveHotkey(key, value) {
+    options[key] = value;
+    localStorage.options = JSON.stringify(options);
+  }
+
+  /**
+   * Modified version of handleObj.handler from jquery.hotkeys.js.
+   *
+   * This version captures all keypresses and returns the combos.
+   */
+  function hotkeysHandler(event) {
+    var textAcceptingInputTypes = ["text", "password", "number", "email", "url", "range", "date", "month", "week", "time", "datetime", "datetime-local", "search", "color"];
+
+    // Don't fire in text-accepting inputs that we didn't directly bind to
+    if (this !== event.target && (/textarea|select/i.test(event.target.nodeName) ||
+      jQuery.inArray(event.target.type, textAcceptingInputTypes) > -1)) {
+      return;
+    }
+
+    // Keypress represents characters, not special keys
+    var special = event.type !== "keypress" && jQuery.hotkeys.specialKeys[event.which],
+      character = String.fromCharCode(event.which).toLowerCase(),
+      key, modif = "", possible = {};
+
+    // check combinations (alt|ctrl|shift+anything)
+    if (event.altKey && special !== "alt") {
+      modif += "alt+";
+    }
+
+    if (event.ctrlKey && special !== "ctrl") {
+      modif += "ctrl+";
+    }
+
+    // TODO: Need to make sure this works consistently across platforms
+    if (event.metaKey && !event.ctrlKey && special !== "meta") {
+      modif += "meta+";
+    }
+
+    if (event.shiftKey && special !== "shift") {
+      modif += "shift+";
+    }
+
+    if (special) {
+      possible[modif + special] = true;
+
+    } else {
+      possible[modif + character] = true;
+      possible[modif + jQuery.hotkeys.shiftNums[character]] = true;
+
+      // "$" can be triggered as "Shift+4" or "Shift+$" or just "$"
+      if (modif === "shift+") {
+        possible[jQuery.hotkeys.shiftNums[character]] = true;
+      }
+    }
+
+    return possible;
+  };
+
+  /**
+   * See: http://stackoverflow.com/a/196991/806988
+   */
+   function toTitleCase(str) {
+     return str.replace(/\w\S*/g, function(txt) {
+       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+     });
+   }
 });
-
-// function initOptions() {
-//   var bgPage = chrome.extension.getBackgroundPage(), options = localStorage.options ? JSON.parse(localStorage.options) : {};
-//   var safeMethodInput = document.getElementById("safeMethodInput"), injectInFrameInput = document.getElementById("injectInFrameInput"), addContextMenuInput = document.getElementById("addContextMenuInput");
-//   safeMethodInput.checked = options.safeMethod;
-//   injectInFrameInput.checked = options.injectInFrame;
-//   addContextMenuInput.checked = options.addContextMenu;
-//   safeMethodInput.addEventListener("change", function() {
-//     options.safeMethod = safeMethodInput.checked;
-//     localStorage.options = JSON.stringify(options);
-//   });
-//   injectInFrameInput.addEventListener("change", function() {
-//     options.injectInFrame = injectInFrameInput.checked;
-//     localStorage.options = JSON.stringify(options);
-//   });
-//   addContextMenuInput.addEventListener("change", function() {
-//     options.addContextMenu = addContextMenuInput.checked;
-//     localStorage.options = JSON.stringify(options);
-//     bgPage.refreshMenuEntry();
-//   });
-//   document.getElementById("open-editor").addEventListener("click", function() {
-//     location.href = "csseditor.html";
-//   }, false);
-// }
-
-// addEventListener("load", initOptions, false);

@@ -13,27 +13,33 @@
   <body>
 
     <div id="container">
+      <img id="icon" src="../../icons/icon48.png" alt="ColumnCopy icon">
       <h1>ColumnCopy Options</h1>
 
       <form>
         <fieldset>
-          <legend>Keyboard shortcuts:</legend>
+          <legend>Keyboard shortcuts</legend>
 
           <div class="form-item">
-            <label>Copy one column:</label>
+            <label>Copy one column</label>
             <span>Click + </span>
-            <input type="text" name="columnHotkey" value="Alt">
+            <!-- The columnHotkey ID is used as a key in localStorage -->
+            <span class="input" id="columnHotkey">
+              <span class="key">Alt</span>
+            </span>
           </div>
 
           <div class="form-item">
-            <label>Copy whole table:</label>
+            <label>Copy whole table</label>
             <span>Click + </span>
-            <input type="text" name="columnHotkey" value="Alt+Shift">
+            <span class="input" id="tableHotkey">
+              <span class="key">Alt</span><span class="sep">+</span><span class="key">Shift</span>
+            </span>
           </div>
+
+          <button id="resetDefault" class="btn btn-warning">Reset to defaults</button>
         </fieldset>
       </form>
-
-      <pre id="debug"></pre>
     </div>
 
     <script src="../../js/jquery/jquery.min.js"></script>
