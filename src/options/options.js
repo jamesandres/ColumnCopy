@@ -1,7 +1,8 @@
 jQuery(function ($) {
 
   var $focusedInput,
-      options = localStorage.options ? JSON.parse(localStorage.options) : {};
+      defaultOptions = { columnHotkey: 'alt', tableHotkey: 'alt+shift' },
+      options = localStorage.options ? JSON.parse(localStorage.options) : defaultOptions;
 
 
   // Initially load previous options
@@ -27,6 +28,11 @@ jQuery(function ($) {
 
 
   // Hotkey -> focusedInput handling
+  $(document).on('keyup', null, '', function (e) {
+    
+  });
+
+
   $(document).on('keydown', null, '', function (e) {
     var possible = hotkeysHandler(e),
         hotkey;
@@ -47,7 +53,7 @@ jQuery(function ($) {
 
   $('#resetDefault').click(function (e) {
     if (confirm('Are you sure you want to reset to defaults?')) {
-      init({ columnHotkey: 'alt', tableHotkey: 'alt+shift' });
+      init(defaultOptions);
 
       $('body').trigger('click'); // Unfocus all inputs
     }

@@ -17,6 +17,12 @@ html, body {
   height: 40px;
 }
 
+fieldset {
+  border: none;
+  border-radius: 4px;
+  background-color: #fff
+}
+
 .form-item {
   margin-bottom: 2em;
 }

@@ -6,8 +6,7 @@
    * The ColumnCopy function object.
    */
   function ColumnCopy() {
-    // TODO: Load options, I think this needs to be done using chrome.extension.connect() + port.onMessage.addListener(function(msg) { if (msg.oninit) { .. } }.
-    // var options = localStorage.options ? JSON.parse(localStorage.options) : {};
+    var that = this;
 
     this.settings = {
       columnSeperator: "\t",
@@ -20,7 +19,12 @@
       this.settings.rowSeparator = "\r\n"; // Yuck.
     }
 
-    this.init();
+    chrome.extension.sendRequest({ method: 'getOptions' }, function(response) {
+      that.settings.columnHotkey = response.options.columnHotkey;
+      that.settings.tableHotkey  = response.options.tableHotkey;
+
+      that.init();
+    });
   }
 
   ColumnCopy.prototype.init = function () {
@@ -31,8 +35,8 @@
     var that = this;
 
     // Reset all hotkeys on key release
-    this.hotkeysReset();
-    $(document).on('keyup', null, '', function () { that.hotkeysReset(); });
+    this.activeHotkeysReset();
+    $(document).on('keyup', null, '', function () { that.activeHotkeysReset(); });
 
     // Set the column hotkey when its combo is pressed. Same for table hotkey.
     $(document).on('keydown', null, this.settings.columnHotkey, function () { that.activeHotkey.column = true; });
@@ -42,7 +46,7 @@
     $(document).on('click', 'th,td', function (e) { that.handleCellClick(e, this); });
   };
 
-  ColumnCopy.prototype.hotkeysReset = function () {
+  ColumnCopy.prototype.activeHotkeysReset = function () {
     this.activeHotkey = {
       'column': false,
       'table':  false
