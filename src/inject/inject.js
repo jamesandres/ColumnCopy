@@ -44,6 +44,37 @@
 
     // Finally, execute the routine on click
     $(document).on('click', 'th,td', function (e) { that.handleCellClick(e, this); });
+
+    // Rube Goldberg routine to determine which element was under the cursor when
+    // the context menu was invoked
+    this.activeCellReset();
+    $(document).on('contextmenu', null, function (e) {
+      var cellParent;
+
+      that.activeCellReset();
+
+      if (['TH', 'TD'].indexOf(e.target.tagName) >= 0) {
+        that.activeCell = e.target;
+      } else {
+        cellParent = $(e.target).parents('th,td:first');
+
+        if (cellParent.length > 0) {
+          that.activeCell = cellParent[0];
+        }
+      }
+    });
+
+    chrome.runtime.onMessage.addListener(function(request) {
+      if (typeof request === 'object' && request.hasOwnProperty('columnCopyContextMenuClick')) {
+        if (that.activeCell !== null) {
+          that.handleContextMenuClick(request.columnCopyContextMenuClick, that.activeCell);
+        }
+      }
+    });
+  };
+
+  ColumnCopy.prototype.activeCellReset = function () {
+    this.activeCell = null;
   };
 
   ColumnCopy.prototype.activeHotkeysReset = function () {
@@ -51,6 +82,21 @@
       'column': false,
       'table':  false
     };
+  };
+
+  ColumnCopy.prototype.handleContextMenuClick = function (type, cell) {
+    var $table = $(cell).parents('table:first');
+
+    switch (type) {
+      case 'copyColumn':
+        this.buildColspanMap($table);
+        this.copyColumnContainingCell(cell, $table);
+        break;
+
+      case 'copyTable':
+        this.copyTableContainingCell(cell, $table);
+        break;
+    }
   };
 
   // TODO: Different key map for $.client.os === 'Windows'?
