@@ -35,5 +35,8 @@
         "src/inject/inject.css"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "js/jquery/jquery.min.map"
   ]
 }
