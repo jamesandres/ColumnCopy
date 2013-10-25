@@ -15,13 +15,18 @@
       tableHotkey:     'alt+shift'
     };
 
-    if (window.navigator.userAgent.match(/Windows/) !== -1) {
+    if (window.navigator.userAgent.match(/Windows/) !== null) {
       this.settings.rowSeparator = "\r\n"; // Yuck.
     }
 
+    if (window.navigator.userAgent.match(/Linux/) !== null) {
+      this.settings.columnHotkey = 'ctrl';
+      this.settings.tableHotkey = 'ctrl+shift';
+    }
+
     chrome.extension.sendRequest({ method: 'getOptions' }, function(response) {
-      that.settings.columnHotkey = response.options.columnHotkey;
-      that.settings.tableHotkey  = response.options.tableHotkey;
+      that.settings.columnHotkey = response.options.columnHotkey || that.settings.columnHotkey;
+      that.settings.tableHotkey  = response.options.tableHotkey || that.settings.tableHotkey;
 
       that.init();
     });

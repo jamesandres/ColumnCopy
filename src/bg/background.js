@@ -37,8 +37,7 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 });
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-  // TODO: Fix this duplication of defaultOptions from options.js
-  var defaultOptions = { columnHotkey: 'alt', tableHotkey: 'alt+shift' };
+  var defaultOptions = { columnHotkey: null, tableHotkey: null };
 
   if (request.method == 'getOptions') {
     sendResponse({
