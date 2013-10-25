@@ -37,6 +37,7 @@
     }
   ],
   "web_accessible_resources": [
+    "js/jquery/jquery.js",
     "js/jquery/jquery.min.map"
   ]
 }
