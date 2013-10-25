@@ -228,7 +228,7 @@
    * See: http://james.padolsey.com/javascript/replacing-text-in-the-dom-its-not-that-simple/
    */
   ColumnCopy.prototype.getCellText = function (cell) {
-    var next, result = [];
+    var next, suffix, href, result = [];
 
     if (cell.nodeType === 1) { // Element node
       if (cell.nodeName === 'INPUT') {
@@ -252,12 +252,24 @@
             break;
         }
       }
+      else if (cell.nodeName === 'A') {
+        href = cell.getAttribute('href');
+
+        if (href) {
+          result.push('=HYPERLINK("' + href + '","');
+          suffix = '")';
+        }
+      }
 
       if (cell = cell.firstChild) {
         do {
           next = cell.nextSibling;
           result.push(this.getCellText(cell));
         } while(cell = next);
+      }
+
+      if (suffix) {
+        result.push(suffix);
       }
     } else if (cell.nodeType === 3) { // Text node
       return cell.data;
