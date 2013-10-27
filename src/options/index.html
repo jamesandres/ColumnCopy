@@ -14,7 +14,7 @@
 
     <div id="container">
       <img id="icon" src="../../icons/icon48.png" alt="ColumnCopy icon">
-      <h1>ColumnCopy Options</h1>
+      <h1>ColumnCopy</h1>
 
       <form>
         <fieldset>
@@ -36,17 +36,24 @@
               <span class="key">Alt</span><span class="sep">+</span><span class="key">Shift</span>
             </span>
           </div>
-
-          <button id="resetDefault" class="btn btn-primary">Reset to defaults</button>
         </fieldset>
-
-        <br><br>
 
         <fieldset>
-          <legend>Other options</legend>
+          <legend>Options</legend>
 
-          <input
+          <div class="form-item">
+            <label>Hyperlink mode</label>
+            <input type="radio" name="hyperlinkMode" id="hyperlinkMode-off" value="off">
+            <span>Copy raw text, not hyperlinks</span>
+            <br>
+            <input type="radio" name="hyperlinkMode" id="hyperlinkMode-excel" value="excel">
+            <span>Create Excel style CSV hyperlinks, ie: <code>=HYPERLINK("http://example.com", "Example")</code></span>
+          </div>
         </fieldset>
+
+        <br>
+
+        <button id="resetDefault" class="btn btn-primary">Reset to defaults</button>
 
       </form>
     </div>

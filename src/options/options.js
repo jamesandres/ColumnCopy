@@ -1,7 +1,11 @@
 jQuery(function ($) {
 
   var $focusedInput,
-      defaultOptions = { columnHotkey: 'alt', tableHotkey: 'alt+shift' },
+      defaultOptions = {
+        columnHotkey: 'alt',
+        tableHotkey: 'alt+shift',
+        hyperlinkMode: 'off'
+      },
       options = localStorage.options ? JSON.parse(localStorage.options) : defaultOptions;
 
 
@@ -43,11 +47,17 @@ jQuery(function ($) {
 
     for (hotkey in possible) {
       if (possible.hasOwnProperty(hotkey) && possible[hotkey]) {
-        saveHotkey($focusedInput.attr('id'), hotkey);
+        saveOption($focusedInput.attr('id'), hotkey);
         $focusedInput.html(valueToKeyboardKeys(hotkey));
         break;
       }
     };
+  });
+
+
+  $('input[name="hyperlinkMode"]').click(function () {
+    $('input[name="hyperlinkMode"]').not(this).removeAttr('checked');
+    saveOption('hyperlinkMode', $(this).val());
   });
 
 
@@ -73,6 +83,9 @@ jQuery(function ($) {
         $('#' + key).html(valueToKeyboardKeys(defaults[key]));
       }
     }
+
+    $('input[name="hyperlinkMode"]').removeAttr('checked');
+    $('#hyperlinkMode-' + defaults.hyperlinkMode).attr('checked', 'checked');
   }
 
   /**
@@ -92,7 +105,7 @@ jQuery(function ($) {
   /**
    * Saves a hotkey to localStorage.
    */
-  function saveHotkey(key, value) {
+  function saveOption(key, value) {
     options[key] = value;
     localStorage.options = JSON.stringify(options);
   }

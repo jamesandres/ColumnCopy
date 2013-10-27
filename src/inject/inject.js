@@ -12,7 +12,8 @@
       columnSeperator: "\t",
       rowSeparator:    "\n",
       columnHotkey:    'alt',
-      tableHotkey:     'alt+shift'
+      tableHotkey:     'alt+shift',
+      hyperlinkMode:   'off'
     };
 
     if (window.navigator.userAgent.match(/Windows/) !== null) {
@@ -25,8 +26,9 @@
     }
 
     chrome.extension.sendRequest({ method: 'getOptions' }, function(response) {
-      that.settings.columnHotkey = response.options.columnHotkey || that.settings.columnHotkey;
-      that.settings.tableHotkey  = response.options.tableHotkey || that.settings.tableHotkey;
+      that.settings.columnHotkey  = response.options.columnHotkey || that.settings.columnHotkey;
+      that.settings.tableHotkey   = response.options.tableHotkey || that.settings.tableHotkey;
+      that.settings.hyperlinkMode = response.options.hyperlinkMode || that.settings.hyperlinkMode;
 
       that.init();
     });
@@ -252,7 +254,7 @@
             break;
         }
       }
-      else if (cell.nodeName === 'A') {
+      else if (this.settings.hyperlinkMode === 'excel' && cell.nodeName === 'A') {
         href = cell.getAttribute('href');
 
         if (href) {
