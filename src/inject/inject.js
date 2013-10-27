@@ -8,28 +8,8 @@
   function ColumnCopy() {
     var that = this;
 
-    this.settings = {
-      columnSeperator: "\t",
-      rowSeparator:    "\n",
-      columnHotkey:    'alt',
-      tableHotkey:     'alt+shift',
-      hyperlinkMode:   'off'
-    };
-
-    if (window.navigator.userAgent.match(/Windows/) !== null) {
-      this.settings.rowSeparator = "\r\n"; // Yuck.
-    }
-
-    if (window.navigator.userAgent.match(/Linux/) !== null) {
-      this.settings.columnHotkey = 'ctrl';
-      this.settings.tableHotkey = 'ctrl+shift';
-    }
-
     chrome.extension.sendRequest({ method: 'getOptions' }, function(response) {
-      that.settings.columnHotkey  = response.options.columnHotkey || that.settings.columnHotkey;
-      that.settings.tableHotkey   = response.options.tableHotkey || that.settings.tableHotkey;
-      that.settings.hyperlinkMode = response.options.hyperlinkMode || that.settings.hyperlinkMode;
-
+      that.options = $.extend({}, response.options);
       that.init();
     });
   }
@@ -46,8 +26,8 @@
     $(document).on('keyup', null, '', function () { that.activeHotkeysReset(); });
 
     // Set the column hotkey when its combo is pressed. Same for table hotkey.
-    $(document).on('keydown', null, this.settings.columnHotkey, function () { that.activeHotkey.column = true; });
-    $(document).on('keydown', null, this.settings.tableHotkey, function () { that.activeHotkey.table = true; });
+    $(document).on('keydown', null, this.options.columnHotkey, function () { that.activeHotkey.column = true; });
+    $(document).on('keydown', null, this.options.tableHotkey, function () { that.activeHotkey.table = true; });
 
     // Finally, execute the routine on click
     $(document).on('click', 'th,td', function (e) { that.handleCellClick(e, this); });
@@ -175,7 +155,7 @@
         }
       });
 
-      values.push(row.join(that.settings.columnSeperator));
+      values.push(row.join(that.options.columnSeperator));
     });
 
     return { column: $(column), values: values };
@@ -215,7 +195,7 @@
         row.push(that.getCellText(this));
       });
 
-      values.push(row.join(that.settings.columnSeperator));
+      values.push(row.join(that.options.columnSeperator));
     });
 
     return values;
@@ -254,7 +234,7 @@
             break;
         }
       }
-      else if (this.settings.hyperlinkMode === 'excel' && cell.nodeName === 'A') {
+      else if (this.options.hyperlinkMode === 'excel' && cell.nodeName === 'A') {
         href = cell.getAttribute('href');
 
         if (href) {
@@ -293,7 +273,7 @@
     // Ping the background.html page, this is where the clipboard
     // communication happens
     // See: http://stackoverflow.com/a/8807145/806988
-    chrome.extension.sendMessage({ toCopy: values.join(this.settings.rowSeparator) });
+    chrome.extension.sendMessage({ toCopy: values.join(this.options.rowSeparator) });
   };
 
 

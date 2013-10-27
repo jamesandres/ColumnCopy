@@ -1,12 +1,7 @@
 jQuery(function ($) {
 
   var $focusedInput,
-      defaultOptions = {
-        columnHotkey: 'alt',
-        tableHotkey: 'alt+shift',
-        hyperlinkMode: 'off'
-      },
-      options = localStorage.options ? JSON.parse(localStorage.options) : defaultOptions;
+      options = getOptions();
 
 
   // Initially load previous options
@@ -63,6 +58,14 @@ jQuery(function ($) {
 
   $('#resetDefault').click(function (e) {
     if (confirm('Are you sure you want to reset to defaults?')) {
+      var defaultOptions = getDefaultOptions(), i;
+
+      for (i in defaultOptions) {
+        if (defaultOptions.hasOwnProperty(i)) {
+          saveOption(i, defaultOptions[i]);
+        }
+      }
+
       init(defaultOptions);
 
       $('body').trigger('click'); // Unfocus all inputs

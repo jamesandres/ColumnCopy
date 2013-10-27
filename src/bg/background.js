@@ -37,12 +37,8 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 });
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-  var defaultOptions = { columnHotkey: null, tableHotkey: null };
-
-  if (request.method == 'getOptions') {
-    sendResponse({
-      options: localStorage.options ? JSON.parse(localStorage.options) : defaultOptions
-    });
+  if (request.method === 'getOptions') {
+    sendResponse({ options: getOptions() });
   }
   else {
     sendResponse({});
