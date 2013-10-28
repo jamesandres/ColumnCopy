@@ -1,5 +1,5 @@
 function getDefaultOptions () {
-  return {
+  var defaultOptions = {
     columnSeperator: "\t",
     rowSeparator:    "\n",
 
@@ -8,6 +8,18 @@ function getDefaultOptions () {
 
     hyperlinkMode:   'off'
   };
+
+
+  if (window.navigator.userAgent.match(/Windows/) !== null) {
+    defaultOptions.rowSeparator = "\r\n"; // Yuck.
+  }
+
+  if (window.navigator.userAgent.match(/Linux/) !== null) {
+    defaultOptions.columnHotkey = 'ctrl';
+    defaultOptions.tableHotkey = 'ctrl+shift';
+  }
+
+  return defaultOptions;
 }
 
 function getOptions () {
@@ -17,15 +29,6 @@ function getOptions () {
     options = $.extend(getDefaultOptions(), JSON.parse(localStorage.options));
   } else {
     options = getDefaultOptions();
-  }
-
-  if (window.navigator.userAgent.match(/Windows/) !== null) {
-    options.rowSeparator = "\r\n"; // Yuck.
-  }
-
-  if (window.navigator.userAgent.match(/Linux/) !== null) {
-    options.columnHotkey = 'ctrl';
-    options.tableHotkey = 'ctrl+shift';
   }
 
   return options;
