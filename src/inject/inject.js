@@ -261,11 +261,11 @@
   };
 
   ColumnCopy.prototype.copiedToClipboardAnimation = function ($column) {
-    $column.addClass('animated copiedToClipboard');
+    $column.addClass('CC-animated CC-copiedToClipboard');
 
     setTimeout(function () {
-      $column.removeClass('animated');
-      $column.removeClass('copiedToClipboard');
+      $column.removeClass('CC-animated');
+      $column.removeClass('CC-copiedToClipboard');
     }, 1000);
   };
 
