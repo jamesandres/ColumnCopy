@@ -1,12 +1,11 @@
 /*jslint browser: true, nomen: true, plusplus: true, todo: true, white: true, indent: 2 */
-var ColumnCopy;
 (function (window, document, $) {
   'use strict';
 
   /**
    * The ColumnCopy function object.
    */
-  ColumnCopy = function () {
+  function ColumnCopy() {
     var that = this;
 
     chrome.extension.sendRequest({ method: 'getOptions' }, function(response) {
@@ -277,7 +276,8 @@ var ColumnCopy;
     chrome.extension.sendMessage({ toCopy: values.join(this.options.rowSeparator) });
   };
 
+  // Expose for testing
+  window.ColumnCopy = ColumnCopy;
 
   var _ColumnCopy = new ColumnCopy();
-
 }(window, document, jQuery));
