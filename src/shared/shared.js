@@ -1,6 +1,6 @@
 function getDefaultOptions () {
   var defaultOptions = {
-    columnSeperator: "\t",
+    columnSeparator: "\t",
     rowSeparator:    "\n",
 
     columnHotkey:    'alt',
