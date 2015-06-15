@@ -18,7 +18,7 @@ describe('ColumnCopy', function() {
 
       _ColumnCopy.options = {
         hyperlinkMode: 'off',
-        columnSeperator: '\t'
+        columnSeparator: '\t'
       };
 
       rows = _ColumnCopy.getValuesForTable($table);

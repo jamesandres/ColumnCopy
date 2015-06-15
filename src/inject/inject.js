@@ -155,7 +155,7 @@
         }
       });
 
-      values.push(row.join(that.options.columnSeperator));
+      values.push(row.join(that.options.columnSeparator));
     });
 
     return { column: $(column), values: values };
@@ -195,7 +195,7 @@
         row.push(that.getCellText(this));
       });
 
-      values.push(row.join(that.options.columnSeperator));
+      values.push(row.join(that.options.columnSeparator));
     });
 
     return values;
