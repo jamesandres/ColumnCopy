@@ -14,7 +14,7 @@ A Google Chrome extension which enables selecting columns from table.
 
 1. Enable the extension.
 2. Alt + Click on any table cell. The column contents is now in your clipboard.
-3. Shit + Alt + Click on any table cell. The table contents is now in your clipboard.
+3. Shift + Alt + Click on any table cell. The table contents is now in your clipboard.
 
 
 ## Credits
