@@ -148,7 +148,7 @@
 
         for (i = map.length - 1; i >= 0; i--) {
           if (cellMap.indexOf(map[i]) !== -1) {
-            row.push(that.getCellText($this[0]));
+            row.push(that.getCellText($this[0]).trim());
             column.push(this);
             break;
           }
@@ -192,7 +192,7 @@
       row = [];
 
       $('>td, >th', this).each(function () {
-        row.push(that.getCellText(this));
+        row.push(that.getCellText(this).trim());
       });
 
       values.push(row.join(that.options.columnSeparator));
@@ -230,12 +230,12 @@
             // and will be captured by the recursion.
             break;
           default:
-            result.push(cell.value);
+            result.push(cell.value.trim());
             break;
         }
       }
       else if (this.options.hyperlinkMode === 'excel' && cell.nodeName === 'A') {
-        href = cell.getAttribute('href');
+        href = cell.getAttribute('href').trim();
 
         if (href) {
           result.push('=HYPERLINK("' + href + '","');
@@ -246,7 +246,7 @@
       if (cell = cell.firstChild) {
         do {
           next = cell.nextSibling;
-          result.push(this.getCellText(cell));
+          result.push(this.getCellText(cell).trim());
         } while(cell = next);
       }
 
@@ -254,10 +254,10 @@
         result.push(suffix);
       }
     } else if (cell.nodeType === 3) { // Text node
-      return cell.data;
+      return cell.data.trim();
     }
 
-    return result.join('');
+    return result.join(' ');
   };
 
   ColumnCopy.prototype.copiedToClipboardAnimation = function ($column) {
