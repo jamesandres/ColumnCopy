@@ -4,6 +4,8 @@ A Google Chrome extension which enables selecting columns from table.
 
 ## Installation
 
+Install from the [Chrome Web Store](https://chrome.google.com/webstore/detail/columncopy/lapbbfoohlcmlbdaakldmmallcbcbpjb), or:
+
 1. Download a the [latest ColumnCopy zip](https://github.com/jamesandres/ColumnCopy/archive/master.zip).
 2. Go to the extensions page in Chrome, it's a tab on the options page
 3. Tick the "Developer mode" checkbox
