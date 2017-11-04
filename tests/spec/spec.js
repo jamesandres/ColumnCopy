@@ -16,10 +16,7 @@ describe('ColumnCopy', function() {
 
       _ColumnCopy = new ColumnCopy();
 
-      _ColumnCopy.options = {
-        hyperlinkMode: 'off',
-        columnSeparator: '\t'
-      };
+      _ColumnCopy.options = getDefaultOptions();
 
       rows = _ColumnCopy.getValuesForTable($table);
     });
@@ -37,4 +34,5 @@ describe('ColumnCopy', function() {
   runTest('test6.html');
   runTest('test7.html');
   runTest('test8.html');
+  runTest('test9.html');
 });

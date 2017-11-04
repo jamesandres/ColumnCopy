@@ -2,6 +2,7 @@ function getDefaultOptions () {
   var defaultOptions = {
     columnSeparator: "\t",
     rowSeparator:    "\n",
+    cellWrapper:     '"',
 
     columnHotkey:    'alt',
     tableHotkey:     'alt+shift',

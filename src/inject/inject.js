@@ -144,7 +144,7 @@
 
         for (i = map.length - 1; i >= 0; i--) {
           if (cellMap.indexOf(map[i]) !== -1) {
-            row.push(that.getCellText($this[0]).trim());
+            row.push(that.wrapCell(that.getCellText($this[0]).trim()));
             column.push(this);
             break;
           }
@@ -188,7 +188,7 @@
       row = [];
 
       $('>td, >th', this).each(function () {
-        row.push(that.getCellText(this).trim());
+        row.push(that.wrapCell(that.getCellText(this).trim()));
       });
 
       values.push(row.join(that.options.columnSeparator));
@@ -254,6 +254,23 @@
     }
 
     return result.join(' ');
+  };
+
+  ColumnCopy.prototype.wrapCell = function (cellText) {
+    var cellWrapper, rowSeparator, escapedCellText;
+    cellWrapper = this.options.cellWrapper;
+    rowSeparator = this.options.rowSeparator;
+
+    if (cellText.indexOf(cellWrapper) === -1 && cellText.indexOf(rowSeparator) === -1) {
+      return cellText;
+    }
+
+    function escapeRegExp(str) {
+        return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    }
+
+    escapedCellText = cellText.replace(RegExp(escapeRegExp(cellWrapper), 'g'), '\\' + cellWrapper);
+    return cellWrapper + escapedCellText + cellWrapper;
   };
 
   ColumnCopy.prototype.copiedToClipboardAnimation = function ($column) {

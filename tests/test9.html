@@ -1,0 +1,79 @@
+<!--
+{
+    "rows": [
+        "Date\tID\tName\tAmount",
+        "15 April 2013\tPaid in 5 days\t98765\tSuper client\t\"USD $29.99\nGBP £22.93\"",
+        "1 April 2013\tPaid in 72 days\t12345\t\"A. \\\"Conglomerate\\\"\"\t\"USD $29.99\nGBP £22.93\"",
+        "1 January 2013\tPaid in 15 days\t38502\tSuper client\t\"USD $29.99\nGBP £22.93\""
+    ]
+}
+-->
+<html>
+<head>
+  <title>ColumnCopy - Test 10 - Quoting</title>
+
+  <style>
+    html,body {
+      width: 100%;
+      margin: 0;
+    }
+    table {
+      width: 80%;
+      margin: 40px auto 0;
+    }
+    th {
+      background-color: #00ffff;
+      font-weight: bold;
+      padding: 0.5em 0.5em;
+    }
+    td {
+      background-color: #eee;
+      padding: 0.25em 0.5em;
+    }
+    tr:nth-child(odd) td {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <table>
+    <thead>
+      <tr>
+        <th colspan=2>Date</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>15 April 2013</td>
+        <td><a href="http://www.google.com/">Paid in 5 days</a></td>
+        <td>98765</td>
+        <td>Super client</td>
+        <td>USD $29.99
+GBP £22.93</td>
+      </tr>
+      <tr>
+        <td><strong>1 April 2013</strong></td>
+        <td><em>Paid in 72 days</em></td>
+        <td>12345</td>
+        <td>A. "Conglomerate"</td>
+        <td>USD $29.99
+GBP £22.93</td>
+      </tr>
+      <tr>
+        <td>1 January 2013</td>
+        <td>Paid in 15 days</td>
+        <td>38502</td>
+        <td>Super client</td>
+        <td><a title="No href attribute">USD $29.99
+GBP £22.93</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>
