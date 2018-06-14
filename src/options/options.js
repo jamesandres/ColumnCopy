@@ -28,7 +28,7 @@ jQuery(function ($) {
 
   // Hotkey -> focusedInput handling
   $(document).on('keyup', null, '', function (e) {
-    
+
   });
 
 
@@ -51,8 +51,33 @@ jQuery(function ($) {
 
 
   $('input[name="hyperlinkMode"]').click(function () {
-    $('input[name="hyperlinkMode"]').not(this).removeAttr('checked');
+    $('input[name="hyperlinkMode"]').not(this).attr('checked', false);
     saveOption('hyperlinkMode', $(this).val());
+  });
+
+  //handle columnSeparator radio button click
+  $('input[name="columnSeparator"]').click(function () {
+    $('input[name="columnSeparator"]').not(this).prop('checked', false);
+
+    //if not selected other then don't need a value in the other text input
+    if ($(this).val() !== "other") {
+       $('#' + "columnSeparatorOther").val("");
+     }
+    // update saved option with new selection
+    saveOption('columnSeparator', $(this).val());
+    saveOption('columnSeparatorVal', lookupSeparator($(this).val()));
+  });
+
+  //handle click into other text input box so it toggles radio button to other.
+  $('input[name="columnSeparatorOther"]').click(function () {
+    $('input[name="columnSeparator"]').not(this).prop('checked', false);
+    $('#columnSeparator-other').prop('checked', true);
+  });
+
+  // handle changes in other value input box, saveing the value typed
+  $('input[name="columnSeparatorOther"]').change(function () {
+    saveOption('columnSeparator', "other");
+    saveOption('columnSeparatorVal', $(this).val());
   });
 
 
@@ -89,6 +114,18 @@ jQuery(function ($) {
 
     $('input[name="hyperlinkMode"]').removeAttr('checked');
     $('#hyperlinkMode-' + defaults.hyperlinkMode).attr('checked', 'checked');
+
+    //clear out separator other value input before we work out what the state should be
+    $('#' + "columnSeparatorOther").val("");
+
+    // set the appropriate columnSeparator radio button from the supplied deafults
+    $('input[name="columnSeparator"]').attr('checked',false);
+    $('#columnSeparator-' + defaults.columnSeparator) .prop('checked', true);
+
+    //if default is other then populate the other value from that stored
+    if (defaults.columnSeparator === "other"){
+      $('#' + "columnSeparatorOther").html(defaults["columnSeparatorVal"]);
+    }
   }
 
   /**

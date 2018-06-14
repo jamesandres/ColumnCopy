@@ -151,7 +151,7 @@
         }
       });
 
-      values.push(row.join(that.options.columnSeparator));
+      values.push(row.join(that.options.columnSeparatorVal));
     });
 
     return { column: $(column), values: values };
@@ -191,7 +191,7 @@
         row.push(that.wrapCell(that.getCellText(this).trim()));
       });
 
-      values.push(row.join(that.options.columnSeparator));
+      values.push(row.join(that.options.columnSeparatorVal));
     });
 
     return values;

@@ -1,8 +1,8 @@
 {
   "name": "ColumnCopy",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "manifest_version": 2,
-  "description": "Enables copying columns from tables.",
+  "description": "Enables copying columns from tables.Supports Column Seperator options.",
   "homepage_url": "https://github.com/jamesandres/ColumnCopy",
   "icons": {
     "16": "icons/icon16.png",

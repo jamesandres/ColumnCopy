@@ -1,6 +1,7 @@
 function getDefaultOptions () {
   var defaultOptions = {
-    columnSeparator: "\t",
+    columnSeparator: "tab", // seperatro name looked up with lookupSeparator (below)
+    columnSeparatorVal: "\t",
     rowSeparator:    "\n",
     cellWrapper:     '"',
 
@@ -33,4 +34,11 @@ function getOptions () {
   }
 
   return options;
+}
+
+//function to provide the appropriate seperator based on seperator name
+function lookupSeparator(sep){
+  const seps = { "tab" : "\t", "comma"  : ",", "pipe" : "|",
+                "colon" : ":", "semicolon" : ";", "other" : " "};
+  return (seps[sep]);
 }
