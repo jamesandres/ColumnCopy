@@ -1,10 +1,12 @@
 describe('ColumnCopy', function() {
   function runTest(fixtureName) {
-    var rows;
-    var spec;
-
-    beforeEach(function() {
-      var fixture, m, $table, _ColumnCopy
+    it('correctly get values via ColumnCopy.getValuesForTable: ' + fixtureName, function() {
+      var fixture;
+      var m;
+      var spec;
+      var $table;
+      var _ColumnCopy;
+      var rows;
 
       jasmine.getFixtures().fixturesPath = './';
       fixture = readFixtures(fixtureName);
@@ -19,9 +21,6 @@ describe('ColumnCopy', function() {
       _ColumnCopy.options = getDefaultOptions();
 
       rows = _ColumnCopy.getValuesForTable($table);
-    });
-
-    it('correctly get values via ColumnCopy.getValuesForTable: ' + fixtureName, function() {
       expect(rows).toEqual(spec.rows);
     });
   }
